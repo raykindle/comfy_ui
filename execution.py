@@ -12,7 +12,20 @@ import nodes
 
 import comfy.model_management
 
+
 def get_input_data(inputs, class_def, unique_id, outputs={}, prompt={}, extra_data={}):
+    """
+    功能：
+        负责从传入的输入中聚集当前节点所需的输入数据，如果输入数据是列表形式，则可能代表从其他节点的输出中取数据。
+        并且使用`extra_data`和固定输入（如prompt ID）补全隐藏输入。
+    :param inputs:
+    :param class_def:
+    :param unique_id:
+    :param outputs:
+    :param prompt:
+    :param extra_data:
+    :return:
+    """
     valid_inputs = class_def.INPUT_TYPES()
     input_data_all = {}
     for x in inputs:
@@ -41,6 +54,15 @@ def get_input_data(inputs, class_def, unique_id, outputs={}, prompt={}, extra_da
     return input_data_all
 
 def map_node_over_list(obj, input_data_all, func, allow_interrupt=False):
+    """
+    功能：函数处理将不同输入数据片段运，送到目标函数的过程。
+    比如，有一系列输入并希望对每个元素都调用相同的函数。如果节点指定为接受输入列表，则将整个输入列表作为参数一次调用函数。
+    :param obj:
+    :param input_data_all:
+    :param func:
+    :param allow_interrupt:
+    :return:
+    """
     # check if node wants the lists
     input_is_list = False
     if hasattr(obj, "INPUT_IS_LIST"):
